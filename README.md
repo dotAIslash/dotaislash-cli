@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="logo.png" alt="dotAIslash Logo" width="120" />
+
 # 🔧 VERSA CLI
 
 ### Reference Command-Line Tool for the `.ai/` Folder Standard
