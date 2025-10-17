@@ -1,0 +1,11 @@
+src/
+tests/
+*.test.ts
+tsconfig.json
+vitest.config.ts
+.eslintrc.json
+coverage/
+.nyc_output/
+*.log
+.DS_Store
+node_modules/
