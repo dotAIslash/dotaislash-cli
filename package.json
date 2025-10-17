@@ -30,19 +30,19 @@
   },
   "dependencies": {
     "@dotaislash/schemas": "link:@dotaislash/schemas",
-    "commander": "^12.0.0",
     "chalk": "^5.3.0",
-    "glob": "^10.3.10",
-    "yaml": "^2.3.4",
-    "ora": "^8.0.1"
+    "commander": "^14.0.1",
+    "glob": "^11.0.3",
+    "ora": "^9.0.0",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@types/node": "^22.15.31",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.57.0",
+    "@types/node": "^24.8.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.38.0",
     "typescript": "^5.8.3",
-    "vitest": "^1.2.0"
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=22.16.0"
