@@ -12,25 +12,26 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: dotAIslash/dotaislash-cli
       
-      - name: Checkout schemas
+      - name: Checkout schemas dependency
         uses: actions/checkout@v4
         with:
           repository: dotAIslash/dotaislash-schemas
-          path: '../dotaislash-schemas'
+          path: schemas
       
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: 1.3.0
       
-      - name: Build schemas dependency
+      - name: Build and link schemas
         run: |
-          cd ../dotaislash-schemas
+          cd schemas
           bun install
           bun run build
+          bun link
+          cd ..
+          bun link @dotaislash/schemas
       
       - name: Install dependencies
         run: bun install
