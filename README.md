@@ -366,7 +366,7 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📊 Status
 
-**Current Version:** 0.1.0 (Alpha)
+**Current Version:** 1.0.0
 
 | Feature | Status |
 |---------|--------|
