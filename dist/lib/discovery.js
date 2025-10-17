@@ -14,8 +14,8 @@ export function findAiFolder(startDir = process.cwd()) {
     let currentDir = resolve(startDir);
     const homeDirectory = homedir();
     // Search upward from start directory
-    let searching = true;
-    while (searching) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
         const aiPath = join(currentDir, '.ai');
         if (existsSync(aiPath)) {
             return aiPath;
