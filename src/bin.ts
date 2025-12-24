@@ -41,9 +41,9 @@ program
   .option('--fix', 'Attempt to fix issues automatically')
   .option('--strict', 'Fail on warnings')
   .argument('[dir]', 'Directory containing .ai/ folder')
-  .action(async (dir) => {
+  .action(async (dir, options) => {
     try {
-      await lint(dir);
+      await lint(dir, options);
     } catch (error) {
       console.error(chalk.red('Error: ') + (error as Error).message);
       process.exit(1);

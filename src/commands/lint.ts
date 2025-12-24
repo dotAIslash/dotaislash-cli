@@ -15,7 +15,7 @@ export interface LintOptions {
 /**
  * Lint .ai/ folder and report issues
  */
-export async function lint(targetDir?: string): Promise<void> {
+export async function lint(targetDir?: string, options: LintOptions = {}): Promise<void> {
   // Find .ai/ folder
   const aiPath = targetDir 
     ? `${targetDir}/.ai`
@@ -68,6 +68,10 @@ export async function lint(targetDir?: string): Promise<void> {
   
   // Exit with error if validation failed
   if (!result.valid) {
+    process.exit(1);
+  }
+
+  if (options.strict && warnings.length > 0) {
     process.exit(1);
   }
   

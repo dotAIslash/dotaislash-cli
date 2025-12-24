@@ -42,8 +42,7 @@ versa context --agent code-reviewer
 - ✅ **Validate** - Lint JSON and Markdown against VERSA schemas
 - 🔄 **Merge** - Deep-merge profiles with base configuration
 - 📦 **Context** - Assemble complete agent payloads
-- 🎨 **Preview** - Visualize your configuration before using
-- 🔍 **Diff** - Compare profiles and see what changes
+- 🧾 **Export** - Print merged configs in JSON/YAML/Text
 
 ---
 
@@ -77,7 +76,7 @@ versa init
 
 # With options
 versa init --minimal              # Minimal setup
-versa init --template typescript  # Use template
+versa init --template typescript  # Template support (planned)
 versa init --profile cursor       # Include profile
 ```
 
@@ -105,19 +104,15 @@ versa lint
 # Lint specific file
 versa lint .ai/context.json
 
-# Auto-fix issues
-versa lint --fix
-
 # Strict mode (fail on warnings)
 versa lint --strict
 ```
 
 **Checks:**
-- ✅ JSON schema validation
-- ✅ Markdown `ai:meta` preambles
+- ✅ JSON schema validation (context, profiles, agents, tools, knowledge, memory)
+- ✅ Markdown `ai:meta` front matter for rules and prompts
 - ✅ File references exist
-- ✅ Circular dependencies
-- ✅ Permission conflicts
+- ✅ Circular dependency detection for agent references
 
 ---
 
@@ -158,10 +153,6 @@ versa context --agent code-reviewer --profile cursor
 # Output formats
 versa context --agent code-reviewer --format json
 versa context --agent code-reviewer --format yaml
-versa context --agent code-reviewer --format text
-
-# Include file contents
-versa context --agent code-reviewer --include-files
 ```
 
 ---
@@ -172,12 +163,10 @@ versa context --agent code-reviewer --include-files
 
 ```bash
 cd my-project
-versa init --template typescript
+versa init
 
-# Choose options interactively:
-# - Language: TypeScript
-# - Include profiles: Cursor, Windsurf
-# - Add sample rules: Yes
+# Or minimal scaffold
+versa init --minimal
 ```
 
 ### Validate Before Commit
@@ -200,118 +189,15 @@ versa context --profile windsurf > .windsurf-context.json
 versa context --profile claude > .claude-context.json
 ```
 
-### Compare Profiles
+### Planned Features
 
-```bash
-# See what's different
-versa diff cursor windsurf
-
-# Output:
-# + cursor.settings.shortcuts.review = "agents/code-reviewer.json"
-# - windsurf.settings.sidebar = "compact"
-```
-
----
-
-## 🔧 Configuration
-
-### `.versarc.json`
-
-Configure CLI behavior in your project:
-
-```json
-{
-  "aiFolder": ".ai",
-  "defaultProfile": "cursor",
-  "strictMode": true,
-  "autoFix": false,
-  "schemaVersion": "1.0"
-}
-```
-
-### Environment Variables
-
-```bash
-# Override .ai/ folder location
-export VERSA_AI_FOLDER=".agent-config"
-
-# Default profile
-export VERSA_DEFAULT_PROFILE="windsurf"
-
-# Enable debug logging
-export VERSA_DEBUG=true
-```
-
----
-
-## 🎨 Templates
-
-### Available Templates
-
-```bash
-# List templates
-versa templates
-
-# Available:
-# - minimal        Basic .ai/ folder
-# - typescript     TypeScript project setup
-# - python         Python project setup
-# - monorepo       Multi-package repository
-# - full-featured  Everything included
-```
-
-### Use a Template
-
-```bash
-versa init --template typescript
-```
-
-### Create Custom Template
-
-```bash
-# Create template directory
-mkdir -p ~/.versa/templates/my-template
-
-# Add files
-cp -r .ai/* ~/.versa/templates/my-template/
-
-# Use it
-versa init --template my-template
-```
-
----
-
-## 🧪 API Usage
-
-Use versa programmatically in your Node.js projects:
-
-```typescript
-import { VersaCLI } from '@dotaislash/cli';
-
-const cli = new VersaCLI({
-  aiFolder: '.ai',
-  schemaVersion: '1.0'
-});
-
-// Initialize
-await cli.init({ template: 'typescript' });
-
-// Validate
-const result = await cli.lint();
-if (result.errors.length > 0) {
-  console.error('Validation failed:', result.errors);
-}
-
-// Merge configuration
-const config = await cli.print({ profile: 'cursor' });
-
-// Generate context
-const context = await cli.context({
-  agent: 'code-reviewer',
-  profile: 'cursor',
-  includeFiles: true
-});
-```
+- `versa diff`
+- `versa preview`
+- `versa import`
+- `versa templates`
+- `versa watch`
+- `versa lint --fix`
+- Template scaffolds for `versa init --template`
 
 ---
 
@@ -361,21 +247,6 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - 📝 Improve documentation
 - 🧪 Add tests
 - 🎨 Create templates
-
----
-
-## 📊 Status
-
-**Current Version:** 1.0.0
-
-| Feature | Status |
-|---------|--------|
-| `versa init` | 🟡 In Progress |
-| `versa lint` | 🟡 In Progress |
-| `versa print` | 🔴 Planned |
-| `versa context` | 🔴 Planned |
-| Templates | 🔴 Planned |
-| npm Package | 🔴 Planned |
 
 ---
 

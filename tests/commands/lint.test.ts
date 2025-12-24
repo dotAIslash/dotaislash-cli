@@ -98,4 +98,60 @@ describe('lint validation', () => {
     const result = validateAiFolder(aiPath);
     expect(result.valid).toBe(false);
   });
+
+  test('reports invalid tool configuration', () => {
+    const aiPath = join(TEST_DIR, '.ai');
+    const toolsPath = join(aiPath, 'tools');
+    mkdirSync(toolsPath, { recursive: true });
+
+    writeFileSync(join(aiPath, 'context.json'), JSON.stringify({
+      version: '1.0',
+      tools: ['tools/bad.json']
+    }));
+
+    // Invalid tool config (missing version/servers)
+    writeFileSync(join(toolsPath, 'bad.json'), JSON.stringify({}));
+
+    const result = validateAiFolder(aiPath);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some(i => i.file.includes('tools/bad.json'))).toBe(true);
+  });
+
+  test('reports invalid prompt metadata', () => {
+    const aiPath = join(TEST_DIR, '.ai');
+    const promptsPath = join(aiPath, 'prompts');
+    mkdirSync(promptsPath, { recursive: true });
+
+    writeFileSync(join(aiPath, 'context.json'), JSON.stringify({
+      version: '1.0',
+      prompts: ['prompts/bad.md']
+    }));
+
+    const content = `---
+ai:meta
+  priority: ultra
+---
+
+# Bad Prompt`;
+    writeFileSync(join(promptsPath, 'bad.md'), content);
+
+    const result = validateAiFolder(aiPath);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some(i => i.file.includes('prompts/bad.md'))).toBe(true);
+  });
+
+  test('reports invalid memory policies', () => {
+    const aiPath = join(TEST_DIR, '.ai');
+    const memoryPath = join(aiPath, 'memory');
+    mkdirSync(memoryPath, { recursive: true });
+
+    writeFileSync(join(aiPath, 'context.json'), JSON.stringify({ version: '1.0' }));
+
+    // Invalid memory policy (missing version)
+    writeFileSync(join(memoryPath, 'policies.json'), JSON.stringify({ retention: {} }));
+
+    const result = validateAiFolder(aiPath);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some(i => i.file.includes('memory/policies.json'))).toBe(true);
+  });
 });

@@ -5,6 +5,7 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { parse as parseYaml } from 'yaml';
 import type { Context, Profile, Agent, RuleMeta } from '@dotaislash/schemas';
 import { validateContext, validateProfile, validateAgent, validateRuleMeta } from '@dotaislash/schemas';
 
@@ -118,7 +119,13 @@ export function loadRule(aiPath: string, rulePath: string): { meta: RuleMeta | n
     
     // Parse YAML-like front matter (simple implementation)
     const metaContent = match[1];
-    const meta = parseSimpleYaml(metaContent);
+    let meta: unknown;
+    try {
+      meta = parseYaml(normalizeYamlIndent(metaContent));
+    } catch (error) {
+      console.warn(`Warning: Invalid YAML metadata in ${rulePath}: ${(error as Error).message}`);
+      return { meta: null, content };
+    }
     
     // Validate metadata
     const result = validateRuleMeta(meta);
@@ -134,38 +141,18 @@ export function loadRule(aiPath: string, rulePath: string): { meta: RuleMeta | n
 }
 
 /**
- * Simple YAML parser for front matter (only supports basic key-value pairs)
+ * Parse YAML for front matter metadata
  */
-function parseSimpleYaml(content: string): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
+function normalizeYamlIndent(content: string): string {
   const lines = content.split('\n');
-  
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    
-    const colonIndex = trimmed.indexOf(':');
-    if (colonIndex === -1) continue;
-    
-    const key = trimmed.substring(0, colonIndex).trim();
-    const value = trimmed.substring(colonIndex + 1).trim();
-    
-    // Parse value
-    if (value === 'true') {
-      result[key] = true;
-    } else if (value === 'false') {
-      result[key] = false;
-    } else if (value.startsWith('[') && value.endsWith(']')) {
-      // Simple array parsing
-      const arrayContent = value.slice(1, -1);
-      result[key] = arrayContent.split(',').map(v => v.trim().replace(/['"]/g, ''));
-    } else {
-      // String value (remove quotes if present)
-      result[key] = value.replace(/^["']|["']$/g, '');
-    }
+  const indents = lines
+    .filter(line => line.trim().length > 0)
+    .map(line => line.match(/^ */)?.[0].length ?? 0);
+  const minIndent = indents.length > 0 ? Math.min(...indents) : 0;
+  if (minIndent === 0) {
+    return content;
   }
-  
-  return result;
+  return lines.map(line => line.slice(minIndent)).join('\n');
 }
 
 /**
